@@ -1,59 +1,55 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'timesheet',
-  title: 'Crew Timesheet',
+  title: 'Timesheet',
   type: 'document',
   fields: [
     {
       name: 'user',
-      title: 'Crew Member',
+      title: 'User',
       type: 'reference',
       to: [{ type: 'user' }],
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'project',
-      title: 'Project',
-      type: 'reference',
-      to: [{ type: 'project' }]
-    },
-    {
-      name: 'unit',
-      title: 'Unit / Section',
-      type: 'reference',
-      to: [{ type: 'unit' }]
+      validation: (Rule: Rule) => Rule.required().error('User is required')
     },
     {
       name: 'date',
-      title: 'Work Date',
-      type: 'datetime',
-      validation: (Rule: Rule) => Rule.required(),
-      initialValue: () => new Date().toISOString()
+      title: 'Date',
+      type: 'date',
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'hoursWorked',
       title: 'Hours Worked',
       type: 'number',
-      validation: (Rule: Rule) => Rule.required().min(0).max(24)
+      validation: (Rule: Rule) =>
+        Rule.required().min(0).max(24).error('Hours must be between 0 and 24')
     },
     {
-      name: 'overtimeHours',
-      title: 'Overtime Hours',
-      type: 'number',
-      initialValue: 0,
-      validation: (Rule: Rule) => Rule.min(0).max(24)
+      name: 'project',
+      title: 'Project',
+      type: 'reference',
+      to: [{ type: 'project' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'notes',
       title: 'Notes',
       type: 'text'
     },
-    {
-      name: 'verified',
-      title: 'Verified by Admin',
-      type: 'boolean',
-      initialValue: false
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      user: 'user',
+      subtitle: 'date'
+    },
+    prepare(selection: { user?: { name?: string }; subtitle?: string }) {
+      return {
+        title: selection.user?.name ?? 'Unnamed User',
+        subtitle: `Date: ${selection.subtitle ?? 'No date'}`
+      }
     }
-  ]
+  }
 }

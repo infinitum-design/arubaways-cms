@@ -2,30 +2,32 @@ import { Rule } from 'sanity'
 
 export default {
   name: 'role',
-  title: 'Role Permissions',
+  title: 'Role',
   type: 'document',
   fields: [
     {
-      name: 'roleName',
+      name: 'name',
       title: 'Role Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required()
+      validation: (Rule: Rule) => Rule.required().error('Role name is required')
     },
     {
-      name: 'permissions',
-      title: 'Permissions',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        list: [
-          'view_projects',
-          'edit_projects',
-          'manage_users',
-          'view_finances',
-          'submit_logs',
-          'admin'
-        ]
+      name: 'description',
+      title: 'Description',
+      type: 'text'
+    }
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'description'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      const { title, subtitle } = selection
+      return {
+        title: title ?? 'Untitled Role',
+        subtitle: subtitle ?? ''
       }
     }
-  ]
+  }
 }

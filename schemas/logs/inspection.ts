@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'inspection',
@@ -6,40 +7,16 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'project',
-      title: 'Project',
+      name: 'log',
+      title: 'Related Log',
       type: 'reference',
-      to: [{ type: 'project' }],
+      to: [{ type: 'log' }],
       validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'unit',
-      title: 'Unit / Section',
-      type: 'reference',
-      to: [{ type: 'unit' }]
-    },
-    {
-      name: 'inspectedBy',
-      title: 'Inspected By',
-      type: 'reference',
-      to: [{ type: 'user' }],
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'date',
-      title: 'Inspection Date',
-      type: 'datetime',
-      validation: (Rule: Rule) => Rule.required(),
-      initialValue: () => new Date().toISOString()
-    },
-    {
-      name: 'result',
-      title: 'Result',
+      name: 'type',
+      title: 'Inspection Type',
       type: 'string',
-      options: {
-        list: ['Passed', 'Failed', 'Pending'],
-        layout: 'radio'
-      },
       validation: (Rule: Rule) => Rule.required()
     },
     {
@@ -48,10 +25,22 @@ export default {
       type: 'text'
     },
     {
-      name: 'attachments',
-      title: 'Attachments',
-      type: 'array',
-      of: [{ type: 'file' }]
+      name: 'passed',
+      title: 'Passed?',
+      type: 'boolean'
+    },
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'type',
+      subtitle: 'passed'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: boolean }) {
+      return {
+        title: title ?? 'Inspection',
+        subtitle: subtitle ? 'Passed' : 'Not Passed'
+      }
     }
-  ]
+  }
 }

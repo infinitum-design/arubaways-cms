@@ -1,48 +1,37 @@
+import { Rule } from 'sanity'
+
 export default {
   name: 'unit',
-  title: 'Project Unit/Section',
+  title: 'Project Unit',
   type: 'document',
   fields: [
     {
-      name: 'project',
-      title: 'Parent Project',
-      type: 'reference',
-      to: [{ type: 'project' }]
+      name: 'name',
+      title: 'Unit Name',
+      type: 'string',
+      validation: (Rule: Rule) => Rule.required().error('Unit name is required')
     },
     {
-      name: 'unitName',
-      title: 'Unit Name or Number',
+      name: 'code',
+      title: 'Unit Code',
       type: 'string'
     },
     {
       name: 'description',
       title: 'Description',
       type: 'text'
-    },
-    {
-      name: 'supervisor',
-      title: 'Supervisor Assigned',
-      type: 'reference',
-      to: [{ type: 'user' }]
-    },
-    {
-      name: 'status',
-      title: 'Status',
-      type: 'string',
-      options: {
-        list: ['Not Started', 'In Progress', 'Blocked', 'Completed']
-      },
-      initialValue: 'Not Started'
-    },
-    {
-      name: 'startDate',
-      title: 'Start Date',
-      type: 'datetime'
-    },
-    {
-      name: 'endDate',
-      title: 'End Date',
-      type: 'datetime'
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'code'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Unit',
+        subtitle: `Code: ${selection.subtitle ?? 'N/A'}`
+      }
+    }
+  }
 }

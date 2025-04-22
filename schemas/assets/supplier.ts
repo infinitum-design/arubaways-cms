@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'supplier',
@@ -9,12 +10,7 @@ export default {
       name: 'name',
       title: 'Supplier Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'contactPerson',
-      title: 'Contact Person',
-      type: 'string'
+      validation: (Rule: Rule) => Rule.required().error('Name is required')
     },
     {
       name: 'email',
@@ -24,7 +20,7 @@ export default {
     },
     {
       name: 'phone',
-      title: 'Phone Number',
+      title: 'Phone',
       type: 'string'
     },
     {
@@ -32,16 +28,18 @@ export default {
       title: 'Address',
       type: 'text'
     },
-    {
-      name: 'notes',
-      title: 'Additional Notes',
-      type: 'text'
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'email'
     },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Supplier',
+        subtitle: selection.subtitle ?? ''
+      }
     }
-  ]
+  }
 }

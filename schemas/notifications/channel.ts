@@ -2,15 +2,18 @@ import { Rule } from 'sanity'
 
 export default {
   name: 'channel',
-  title: 'Channel',
+  title: 'Notification Channel',
   type: 'document',
   fields: [
     {
-      name: 'name',
-      title: 'Channel Name',
+      name: 'type',
+      title: 'Channel Type',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Maintenance, Management, Electrical, Emergency'
+      options: {
+        list: ['Email', 'SMS', 'Push', 'Slack'],
+        layout: 'dropdown'
+      },
+      validation: (Rule: Rule) => Rule.required().error('Channel type is required')
     },
     {
       name: 'description',
@@ -18,26 +21,22 @@ export default {
       type: 'text'
     },
     {
-      name: 'type',
-      title: 'Channel Type',
-      type: 'string',
-      options: {
-        list: ['Log', 'Notification', 'Report', 'Task'],
-        layout: 'dropdown'
-      },
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
       name: 'active',
       title: 'Is Active?',
       type: 'boolean',
       initialValue: true
-    },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'type',
+      subtitle: 'description'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: title ?? 'Channel',
+        subtitle: subtitle ?? ''
+      }
+    }
+  }
 }

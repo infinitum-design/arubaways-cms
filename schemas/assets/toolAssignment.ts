@@ -1,3 +1,6 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'toolAssignment',
   title: 'Tool Assignment',
@@ -8,28 +11,38 @@ export default {
       title: 'Tool',
       type: 'reference',
       to: [{ type: 'tool' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'assignedTo',
       title: 'Assigned To (User)',
       type: 'reference',
       to: [{ type: 'user' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'assignedDate',
-      title: 'Date Assigned',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
+      title: 'Assigned Date',
+      type: 'date',
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'returnDate',
-      title: 'Expected Return Date',
-      type: 'datetime',
+      title: 'Return Date',
+      type: 'date'
     },
-    {
-      name: 'conditionNotes',
-      title: 'Condition on Assignment',
-      type: 'text',
-    },
+    ...metadataFields
   ],
+  preview: {
+    select: {
+      title: 'tool.name',
+      subtitle: 'assignedDate'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Tool Assignment',
+        subtitle: `Date: ${selection.subtitle ?? 'N/A'}`
+      }
+    }
+  }
 }

@@ -9,8 +9,7 @@ export default {
       name: 'name',
       title: 'Client Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Aruba Marriott Hotel, John Doe, Property Management Co.'
+      validation: (Rule: Rule) => Rule.required().error('Client name is required')
     },
     {
       name: 'contactPerson',
@@ -21,42 +20,29 @@ export default {
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: Rule) => Rule.email()
+      validation: (Rule: Rule) => Rule.email().error('Enter a valid email')
     },
     {
       name: 'phone',
-      title: 'Phone Number',
+      title: 'Phone',
       type: 'string'
     },
     {
-      name: 'address',
-      title: 'Address',
-      type: 'text'
-    },
-    {
-      name: 'clientType',
-      title: 'Client Type',
-      type: 'string',
-      options: {
-        list: ['Residential', 'Commercial', 'Government', 'Contractor', 'Other']
-      }
-    },
-    {
-      name: 'notes',
-      title: 'Internal Notes',
-      type: 'text'
-    },
-    {
-      name: 'active',
-      title: 'Is Active?',
-      type: 'boolean',
-      initialValue: true
-    },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      name: 'company',
+      title: 'Company',
+      type: 'string'
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'company'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Client',
+        subtitle: selection.subtitle ?? ''
+      }
+    }
+  }
 }

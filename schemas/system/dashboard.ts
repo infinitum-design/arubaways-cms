@@ -4,29 +4,23 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'label',
-      title: 'Card Label',
+      name: 'title',
+      title: 'Title',
       type: 'string'
     },
     {
-      name: 'type',
-      title: 'Data Type',
-      type: 'string',
-      options: {
-        list: ['Quotes', 'Logs', 'Invoices', 'Crew Hours', 'Tool Alerts']
-      }
-    },
-    {
-      name: 'filter',
-      title: 'Custom Filter',
-      type: 'string',
-      description: 'Optional query or tag to filter this card'
-    },
-    {
-      name: 'visible',
-      title: 'Visible on Dashboard',
-      type: 'boolean',
-      initialValue: true
+      name: 'widgets',
+      title: 'Widgets',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'widgetSettings' }] }]
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'title'
+    },
+    prepare({ title }: { title?: string }) {
+      return { title: title ?? 'Dashboard Config' }
+    }
+  }
 }

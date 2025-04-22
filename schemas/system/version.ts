@@ -1,52 +1,35 @@
-import { Rule } from 'sanity'
-
 export default {
   name: 'version',
-  title: 'Version History',
+  title: 'System Version',
   type: 'document',
   fields: [
     {
-      name: 'targetType',
-      title: 'Entity Type',
-      type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. quote, checklist, reportTemplate, payrollConfig'
+      name: 'version',
+      title: 'Version',
+      type: 'string'
     },
     {
-      name: 'targetId',
-      title: 'Linked Document ID',
-      type: 'string',
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'versionLabel',
-      title: 'Version Label',
-      type: 'string',
-      description: 'e.g. v1.0, Updated Payment Terms, Initial Draft'
-    },
-    {
-      name: 'changes',
-      title: 'What Changed?',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'Optional: summary of fields or notes changed'
-    },
-    {
-      name: 'updatedBy',
-      title: 'Updated By',
-      type: 'reference',
-      to: [{ type: 'user' }]
-    },
-    {
-      name: 'updatedAt',
-      title: 'Updated At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      name: 'releaseDate',
+      title: 'Release Date',
+      type: 'date'
     },
     {
       name: 'notes',
-      title: 'Version Notes',
-      type: 'text'
+      title: 'Release Notes',
+      type: 'array',
+      of: [{ type: 'block' }]
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'version',
+      subtitle: 'releaseDate'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: `Version ${title ?? ''}`,
+        subtitle: `Released: ${subtitle ?? ''}`
+      }
+    }
+  }
 }

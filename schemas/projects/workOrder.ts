@@ -9,81 +9,47 @@ export default {
       name: 'title',
       title: 'Work Order Title',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Install conduit in Unit 6, Fix panel at Hotel XYZ'
+      validation: (Rule: Rule) => Rule.required().error('Title is required')
     },
     {
       name: 'project',
-      title: 'Project',
+      title: 'Related Project',
       type: 'reference',
       to: [{ type: 'project' }],
       validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'unit',
-      title: 'Unit / Section',
-      type: 'reference',
-      to: [{ type: 'unit' }]
-    },
-    {
-      name: 'phase',
-      title: 'Phase (if any)',
-      type: 'reference',
-      to: [{ type: 'phase' }]
-    },
-    {
-      name: 'category',
-      title: 'Job Category',
-      type: 'reference',
-      to: [{ type: 'jobCategory' }]
-    },
-    {
       name: 'assignedTo',
-      title: 'Assigned Crew',
+      title: 'Assigned To',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'user' }] }]
+    },
+    {
+      name: 'dueDate',
+      title: 'Due Date',
+      type: 'date'
     },
     {
       name: 'status',
       title: 'Status',
       type: 'string',
       options: {
-        list: ['Pending', 'In Progress', 'Completed', 'On Hold', 'Canceled']
+        list: ['Open', 'In Progress', 'Completed', 'Canceled'],
+        layout: 'dropdown'
       },
-      initialValue: 'Pending'
-    },
-    {
-      name: 'startDate',
-      title: 'Start Date',
-      type: 'datetime'
-    },
-    {
-      name: 'endDate',
-      title: 'End Date',
-      type: 'datetime'
-    },
-    {
-      name: 'description',
-      title: 'Work Description',
-      type: 'text'
-    },
-    {
-      name: 'checklist',
-      title: 'Checklist Used',
-      type: 'reference',
-      to: [{ type: 'checklist' }]
-    },
-    {
-      name: 'attachments',
-      title: 'Files / Images',
-      type: 'array',
-      of: [{ type: 'file' }]
-    },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      validation: (Rule: Rule) => Rule.required()
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'status'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Untitled Work Order',
+        subtitle: `Status: ${selection.subtitle ?? 'N/A'}`
+      }
+    }
+  }
 }

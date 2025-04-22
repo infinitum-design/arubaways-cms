@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'user',
@@ -9,42 +10,49 @@ export default {
       name: 'name',
       title: 'Full Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required().error('Name is required')
     },
     {
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required().email(),
+      validation: (Rule: Rule) =>
+        Rule.required().email().error('A valid email address is required')
     },
     {
       name: 'role',
-      title: 'User Role',
+      title: 'Role',
       type: 'string',
       options: {
-        list: ['Admin', 'Office', 'Crew'],
-        layout: 'radio',
+        list: ['admin', 'office', 'field', 'finance'],
+        layout: 'dropdown'
       },
-      validation: (Rule: Rule) => Rule.required(),
-    },
-    {
-      name: 'dailyRate',
-      title: 'Daily Rate (ƒ)',
-      type: 'number',
-      // ❌ Removed invalid `hidden` condition
-      description: 'Only applies to crew members for payroll calculations',
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'isActive',
-      title: 'Active Account?',
+      title: 'Active User',
       type: 'boolean',
-      initialValue: true,
+      initialValue: true
     },
     {
-      name: 'joinDate',
-      title: 'Join Date',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
+      name: 'phone',
+      title: 'Phone Number',
+      type: 'string'
     },
+    ...metadataFields
   ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'role'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      const { title, subtitle } = selection
+      return {
+        title: title ?? 'Unnamed User',
+        subtitle: `Role: ${subtitle ?? 'Unknown'}`
+      }
+    }
+  }
 }

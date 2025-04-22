@@ -1,53 +1,55 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'log',
-  title: 'Daily Log Entry',
+  title: 'Daily Log',
   type: 'document',
   fields: [
     {
       name: 'project',
       title: 'Project',
       type: 'reference',
-      to: [{ type: 'project' }]
+      to: [{ type: 'project' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'unit',
-      title: 'Unit/Section',
+      name: 'createdBy',
+      title: 'Created By',
       type: 'reference',
-      to: [{ type: 'unit' }]
-    },
-    {
-      name: 'loggedBy',
-      title: 'Logged By',
-      type: 'reference',
-      to: [{ type: 'user' }]
+      to: [{ type: 'user' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'logDate',
       title: 'Log Date',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      type: 'date',
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'workSummary',
-      title: 'Work Summary',
-      type: 'text'
+      name: 'template',
+      title: 'Template Used',
+      type: 'reference',
+      to: [{ type: 'logTemplate' }]
     },
     {
-      name: 'issuesEncountered',
-      title: 'Issues Encountered',
-      type: 'text'
-    },
-    {
-      name: 'materialsUsed',
-      title: 'Materials Used',
+      name: 'content',
+      title: 'Log Content',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'material' }] }]
+      of: [{ type: 'block' }]
     },
-    {
-      name: 'crewPresent',
-      title: 'Crew Present',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'user' }] }]
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'project.name',
+      subtitle: 'logDate'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: `Log - ${title ?? 'Project'}`,
+        subtitle: `Date: ${subtitle ?? 'N/A'}`
+      }
     }
-  ]
+  }
 }

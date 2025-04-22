@@ -1,34 +1,34 @@
 export default {
   name: 'settings',
-  title: 'Platform Settings',
+  title: 'System Settings',
   type: 'document',
   fields: [
     {
-      name: 'currency',
-      title: 'Default Currency',
-      type: 'string',
-      initialValue: 'ƒ',
-      options: {
-        list: ['ƒ', 'USD', 'EUR']
-      }
-    },
-    {
-      name: 'languages',
-      title: 'Supported Languages',
-      type: 'array',
-      of: [{ type: 'string' }],
-      initialValue: ['English', 'Spanish']
+      name: 'systemName',
+      title: 'System Name',
+      type: 'string'
     },
     {
       name: 'timezone',
       title: 'Timezone',
-      type: 'string',
-      initialValue: 'America/Aruba'
+      type: 'string'
     },
     {
-      name: 'companyInfo',
-      title: 'Company Information',
-      type: 'text'
+      name: 'defaultCurrency',
+      title: 'Default Currency',
+      type: 'string'
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'systemName',
+      subtitle: 'timezone'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: title ?? 'Settings',
+        subtitle: `Timezone: ${subtitle ?? 'UTC'}`
+      }
+    }
+  }
 }

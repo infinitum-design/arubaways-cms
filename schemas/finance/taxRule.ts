@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'taxRule',
@@ -7,34 +8,34 @@ export default {
   fields: [
     {
       name: 'name',
-      title: 'Tax Name',
+      title: 'Tax Rule Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Standard VAT, Exempt, Import Tax'
+      validation: (Rule: Rule) => Rule.required().error('Name is required')
     },
     {
       name: 'percentage',
-      title: 'Tax Percentage (%)',
+      title: 'Tax Percentage',
       type: 'number',
-      validation: (Rule: Rule) => Rule.required().min(0).max(100),
-      description: 'Set the tax rate like 6 or 12'
+      validation: (Rule: Rule) =>
+        Rule.required().min(0).max(100).error('Enter a valid percentage')
     },
     {
-      name: 'description',
-      title: 'Description',
-      type: 'text'
+      name: 'country',
+      title: 'Country / Region',
+      type: 'string'
     },
-    {
-      name: 'default',
-      title: 'Default Tax Rule?',
-      type: 'boolean',
-      initialValue: false
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'percentage'
     },
-    {
-      name: 'active',
-      title: 'Is Active?',
-      type: 'boolean',
-      initialValue: true
+    prepare(selection: { title?: string; subtitle?: number }) {
+      return {
+        title: selection.title ?? 'Unnamed Tax Rule',
+        subtitle: `Rate: ${selection.subtitle ?? 0}%`
+      }
     }
-  ]
+  }
 }

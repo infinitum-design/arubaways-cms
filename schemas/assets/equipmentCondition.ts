@@ -1,38 +1,34 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'equipmentCondition',
-  title: 'Equipment Condition Report',
+  title: 'Equipment Condition',
   type: 'document',
   fields: [
     {
-      name: 'tool',
-      title: 'Tool',
-      type: 'reference',
-      to: [{ type: 'tool' }],
-    },
-    {
-      name: 'reportedBy',
-      title: 'Reported By (User)',
-      type: 'reference',
-      to: [{ type: 'user' }],
-    },
-    {
-      name: 'date',
-      title: 'Date Reported',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
-    },
-    {
-      name: 'condition',
-      title: 'Condition',
+      name: 'label',
+      title: 'Condition Label',
       type: 'string',
-      options: {
-        list: ['Good', 'Needs Maintenance', 'Broken'],
-      },
+      validation: (Rule: Rule) => Rule.required().error('Label is required')
     },
     {
-      name: 'notes',
-      title: 'Additional Notes',
-      type: 'text',
+      name: 'description',
+      title: 'Description',
+      type: 'text'
     },
+    ...metadataFields
   ],
+  preview: {
+    select: {
+      title: 'label',
+      subtitle: 'description'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Condition',
+        subtitle: selection.subtitle ?? ''
+      }
+    }
+  }
 }

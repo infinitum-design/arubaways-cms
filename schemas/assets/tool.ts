@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'tool',
@@ -9,32 +10,40 @@ export default {
       name: 'name',
       title: 'Tool Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
+      validation: (Rule: Rule) => Rule.required().error('Tool name is required')
     },
     {
-      name: 'serial',
+      name: 'serialNumber',
       title: 'Serial Number',
-      type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
+      type: 'string'
     },
     {
-      name: 'status',
-      title: 'Status',
+      name: 'condition',
+      title: 'Condition',
       type: 'string',
       options: {
-        list: ['Available', 'In Use', 'Maintenance'],
-      },
-      initialValue: 'Available',
+        list: ['New', 'Good', 'Needs Repair', 'Broken'],
+        layout: 'dropdown'
+      }
     },
     {
-      name: 'photo',
-      title: 'Tool Photo',
-      type: 'image',
+      name: 'supplier',
+      title: 'Supplier',
+      type: 'reference',
+      to: [{ type: 'supplier' }]
     },
-    {
-      name: 'conditionNotes',
-      title: 'Condition Notes',
-      type: 'text',
-    },
+    ...metadataFields
   ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'serialNumber'
+    },
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Tool',
+        subtitle: `SN: ${selection.subtitle ?? 'N/A'}`
+      }
+    }
+  }
 }

@@ -1,52 +1,41 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'warranty',
-  title: 'Warranty Record',
+  title: 'Warranty Policy',
   type: 'document',
   fields: [
     {
-      name: 'project',
-      title: 'Linked Project',
-      type: 'reference',
-      to: [{ type: 'project' }],
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'unit',
-      title: 'Unit / Section',
-      type: 'reference',
-      to: [{ type: 'unit' }]
-    },
-    {
-      name: 'item',
-      title: 'Covered Item',
+      name: 'title',
+      title: 'Warranty Title',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Lighting Fixtures, Panel Install, etc.'
+      validation: (Rule: Rule) => Rule.required().error('Title is required')
     },
     {
-      name: 'startDate',
-      title: 'Warranty Start Date',
-      type: 'datetime',
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
-      name: 'durationMonths',
-      title: 'Duration (Months)',
+      name: 'duration',
+      title: 'Duration (in months)',
       type: 'number',
-      validation: (Rule: Rule) => Rule.required().min(1)
+      validation: (Rule: Rule) =>
+        Rule.required().min(1).error('Duration must be at least 1 month')
     },
     {
-      name: 'terms',
-      title: 'Terms & Conditions',
+      name: 'coverage',
+      title: 'Coverage Description',
       type: 'text'
     },
-    {
-      name: 'createdAt',
-      title: 'Registered At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'duration'
+    },
+    prepare(selection: { title?: string; subtitle?: number }) {
+      return {
+        title: selection.title ?? 'Unnamed Warranty',
+        subtitle: `Duration: ${selection.subtitle ?? 0} mo`
+      }
     }
-  ]
+  }
 }

@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'materialCategory',
@@ -9,27 +10,26 @@ export default {
       name: 'name',
       title: 'Category Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required()
+      validation: (Rule: Rule) =>
+        Rule.required().error('Category name is required')
     },
     {
       name: 'description',
       title: 'Description',
       type: 'text'
     },
-    {
-      name: 'defaultUnit',
-      title: 'Default Unit',
-      type: 'string',
-      options: {
-        list: ['pcs', 'm', 'kg', 'liters', 'boxes', 'rolls'],
-        layout: 'dropdown'
-      }
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'description'
     },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Category',
+        subtitle: selection.subtitle ?? ''
+      }
     }
-  ]
+  }
 }

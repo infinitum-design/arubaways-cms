@@ -1,54 +1,57 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'project',
   title: 'Project',
   type: 'document',
   fields: [
     {
-      name: 'projectName',
+      name: 'name',
       title: 'Project Name',
-      type: 'string'
+      type: 'string',
+      validation: (Rule: Rule) => Rule.required().error('Project name is required')
     },
     {
-      name: 'clientName',
-      title: 'Client Name',
-      type: 'string'
+      name: 'client',
+      title: 'Client',
+      type: 'reference',
+      to: [{ type: 'client' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'projectType',
-      title: 'Type of Project',
+      name: 'status',
+      title: 'Status',
       type: 'string',
       options: {
-        list: ['Residential', 'Commercial', 'Industrial', 'Government']
-      }
-    },
-    {
-      name: 'location',
-      title: 'Project Location',
-      type: 'string'
+        list: ['Planning', 'In Progress', 'Completed', 'On Hold'],
+        layout: 'dropdown'
+      },
+      validation: (Rule: Rule) => Rule.required()
     },
     {
       name: 'startDate',
       title: 'Start Date',
-      type: 'datetime'
+      type: 'date'
     },
     {
       name: 'endDate',
-      title: 'End Date (Estimated or Final)',
-      type: 'datetime'
+      title: 'End Date',
+      type: 'date'
     },
-    {
-      name: 'status',
-      title: 'Project Status',
-      type: 'string',
-      options: {
-        list: ['Planned', 'In Progress', 'Paused', 'Completed']
-      },
-      initialValue: 'Planned'
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'status'
     },
-    {
-      name: 'notes',
-      title: 'Additional Notes',
-      type: 'text'
+    prepare(selection: { title?: string; subtitle?: string }) {
+      const { title, subtitle } = selection
+      return {
+        title: title ?? 'Untitled',
+        subtitle: `Status: ${subtitle ?? 'None'}`
+      }
     }
-  ]
+  }
 }

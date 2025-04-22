@@ -1,59 +1,54 @@
+import { Rule } from 'sanity'
+
 export default {
-  name: 'payrollEntry', // ✅ Unique schema name to avoid conflict with payroll.ts
-  title: 'Payroll Entry',
+  name: 'triggerRule',
+  title: 'Trigger Rule',
   type: 'document',
   fields: [
     {
-      name: 'user',
-      title: 'Crew Member',
-      type: 'reference',
-      to: [{ type: 'user' }]
+      name: 'name',
+      title: 'Rule Name',
+      type: 'string',
+      validation: (Rule: Rule) => Rule.required().error('Name is required')
     },
     {
-      name: 'periodStart',
-      title: 'Start of Period',
-      type: 'datetime'
-    },
-    {
-      name: 'periodEnd',
-      title: 'End of Period',
-      type: 'datetime'
-    },
-    {
-      name: 'daysWorked',
-      title: 'Days Worked',
-      type: 'number'
-    },
-    {
-      name: 'dailyRate',
-      title: 'Daily Rate',
-      type: 'number',
-      description: 'Will auto-fill from user but can be overridden'
-    },
-    {
-      name: 'overtimePay',
-      title: 'Overtime Pay',
-      type: 'number'
-    },
-    {
-      name: 'totalPay',
-      title: 'Total Pay',
-      type: 'number'
-    },
-    {
-      name: 'status',
-      title: 'Status',
+      name: 'event',
+      title: 'Event Type',
       type: 'string',
       options: {
-        list: ['Draft', 'Exported', 'Paid']
+        list: [
+          'On Project Completion',
+          'On New Invoice',
+          'On Payment Received',
+          'On Task Assigned',
+          'Custom Condition'
+        ],
+        layout: 'dropdown'
       },
-      initialValue: 'Draft'
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'generatedAt',
-      title: 'Generated At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      name: 'active',
+      title: 'Active',
+      type: 'boolean',
+      initialValue: true
+    },
+    {
+      name: 'targetRole',
+      title: 'Target Role',
+      type: 'string'
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'event'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: title ?? 'Trigger Rule',
+        subtitle: subtitle ?? '—'
+      }
+    }
+  }
 }

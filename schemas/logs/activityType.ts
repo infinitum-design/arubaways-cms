@@ -9,33 +9,28 @@ export default {
       name: 'label',
       title: 'Label',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Electrical Install, Troubleshooting, Inspection'
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'description',
-      title: 'Description',
-      type: 'text'
-    },
-    {
-      name: 'category',
-      title: 'Category',
+      name: 'color',
+      title: 'Color',
       type: 'string',
       options: {
-        list: ['Electrical', 'Maintenance', 'Inspection', 'Repair', 'General'],
+        list: ['gray', 'blue', 'green', 'yellow', 'red'],
         layout: 'dropdown'
       }
-    },
-    {
-      name: 'defaultDuration',
-      title: 'Default Duration (hours)',
-      type: 'number'
-    },
-    {
-      name: 'active',
-      title: 'Is Active?',
-      type: 'boolean',
-      initialValue: true
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'label',
+      subtitle: 'color'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: title ?? 'Activity',
+        subtitle: `Color: ${subtitle ?? 'N/A'}`
+      }
+    }
+  }
 }

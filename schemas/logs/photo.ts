@@ -1,41 +1,41 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'photo',
-  title: 'Job Photo',
+  title: 'Log Photo',
   type: 'document',
   fields: [
     {
+      name: 'log',
+      title: 'Related Log',
+      type: 'reference',
+      to: [{ type: 'log' }],
+      validation: (Rule: Rule) => Rule.required()
+    },
+    {
       name: 'image',
-      title: 'Image File',
-      type: 'image'
+      title: 'Photo',
+      type: 'image',
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'description',
-      title: 'Photo Description',
-      type: 'text'
+      name: 'caption',
+      title: 'Caption',
+      type: 'string'
     },
-    {
-      name: 'project',
-      title: 'Project',
-      type: 'reference',
-      to: [{ type: 'project' }]
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'caption',
+      media: 'image'
     },
-    {
-      name: 'unit',
-      title: 'Unit',
-      type: 'reference',
-      to: [{ type: 'unit' }]
-    },
-    {
-      name: 'uploadedBy',
-      title: 'Uploaded By',
-      type: 'reference',
-      to: [{ type: 'user' }]
-    },
-    {
-      name: 'uploadDate',
-      title: 'Upload Date',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    prepare({ title, media }: { title?: string; media?: any }) {
+      return {
+        title: title ?? 'Photo',
+        media
+      }
     }
-  ]
+  }
 }

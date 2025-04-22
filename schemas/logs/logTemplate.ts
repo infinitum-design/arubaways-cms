@@ -6,45 +6,26 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'templateName',
-      title: 'Template Name',
+      name: 'title',
+      title: 'Template Title',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Daily Site Log, Crew Maintenance Report'
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'description',
-      title: 'Description',
-      type: 'text'
-    },
-    {
-      name: 'activityType',
-      title: 'Related Activity Type',
-      type: 'reference',
-      to: [{ type: 'activityType' }]
-    },
-    {
-      name: 'defaultFields',
-      title: 'Default Fields',
+      name: 'content',
+      title: 'Default Content',
       type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { name: 'label', title: 'Field Label', type: 'string' },
-            { name: 'type', title: 'Field Type', type: 'string', options: {
-              list: ['string', 'text', 'number', 'boolean', 'date', 'file']
-            }}
-          ]
-        }
-      ],
-      description: 'These fields will auto-populate when using this template.'
-    },
-    {
-      name: 'isActive',
-      title: 'Is Active?',
-      type: 'boolean',
-      initialValue: true
+      of: [{ type: 'block' }]
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'title'
+    },
+    prepare({ title }: { title?: string }) {
+      return {
+        title: title ?? 'Untitled Template'
+      }
+    }
+  }
 }

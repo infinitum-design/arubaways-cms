@@ -1,41 +1,41 @@
+import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
+
 export default {
   name: 'video',
-  title: 'Job Video',
+  title: 'Log Video',
   type: 'document',
   fields: [
     {
-      name: 'video',
-      title: 'Video File',
-      type: 'file'
-    },
-    {
-      name: 'description',
-      title: 'Video Description',
-      type: 'text'
-    },
-    {
-      name: 'project',
-      title: 'Project',
+      name: 'log',
+      title: 'Related Log',
       type: 'reference',
-      to: [{ type: 'project' }]
+      to: [{ type: 'log' }],
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'unit',
-      title: 'Unit',
-      type: 'reference',
-      to: [{ type: 'unit' }]
+      name: 'videoUrl',
+      title: 'Video URL',
+      type: 'url',
+      validation: (Rule: Rule) => Rule.uri({ scheme: ['https'] })
     },
     {
-      name: 'uploadedBy',
-      title: 'Uploaded By',
-      type: 'reference',
-      to: [{ type: 'user' }]
+      name: 'caption',
+      title: 'Caption',
+      type: 'string'
     },
-    {
-      name: 'uploadDate',
-      title: 'Upload Date',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'caption',
+      subtitle: 'videoUrl'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: title ?? 'Video',
+        subtitle: subtitle ?? ''
+      }
     }
-  ]
+  }
 }

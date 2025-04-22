@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'assetCategory',
@@ -6,27 +7,28 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'name',
-      title: 'Category Name',
+      name: 'title',
+      title: 'Category Title',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required()
+      validation: (Rule: Rule) => Rule.required().error('Title is required')
     },
     {
       name: 'description',
       title: 'Description',
       type: 'text'
     },
-    {
-      name: 'icon',
-      title: 'Icon (Optional)',
-      type: 'string',
-      description: 'FontAwesome or similar icon name (for UI use)'
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      subtitle: 'description'
     },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Category',
+        subtitle: selection.subtitle ?? ''
+      }
     }
-  ]
+  }
 }

@@ -1,71 +1,38 @@
-import { Rule } from 'sanity'
-
 export default {
   name: 'layoutPreference',
   title: 'Layout Preference',
   type: 'document',
   fields: [
     {
-      name: 'appliesTo',
-      title: 'Applies To',
-      type: 'string',
-      options: {
-        list: ['Admin', 'Office', 'Crew', 'Custom User'],
-        layout: 'dropdown'
-      },
-      validation: (Rule: Rule) => Rule.required()
-    },
-    {
       name: 'user',
-      title: 'Specific User (Optional)',
+      title: 'User',
       type: 'reference',
-      to: [{ type: 'user' }],
-      description: 'If set, this layout applies only to this user'
+      to: [{ type: 'user' }]
     },
     {
-      name: 'preferredTheme',
+      name: 'theme',
       title: 'Theme',
       type: 'string',
       options: {
-        list: ['Light', 'Dark', 'Auto']
-      },
-      initialValue: 'Auto'
-    },
-    {
-      name: 'dashboardView',
-      title: 'Dashboard Style',
-      type: 'string',
-      options: {
-        list: ['Tabs', 'Timeline', 'Accordion'],
-        layout: 'dropdown'
-      },
-      initialValue: 'Tabs'
-    },
-    {
-      name: 'defaultLandingPage',
-      title: 'Default Landing Page',
-      type: 'string',
-      options: {
-        list: ['Dashboard', 'Projects', 'Logs', 'Payroll', 'Tools']
+        list: ['light', 'dark', 'auto']
       }
     },
     {
-      name: 'sidebarCollapsed',
-      title: 'Collapse Sidebar by Default?',
-      type: 'boolean',
-      initialValue: false
-    },
-    {
-      name: 'customSettings',
-      title: 'Custom Settings (JSON)',
-      type: 'text',
-      description: 'Advanced overrides in JSON format (for developers)'
-    },
-    {
-      name: 'updatedAt',
-      title: 'Last Updated',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+      name: 'defaultView',
+      title: 'Default View',
+      type: 'string'
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'user.name',
+      subtitle: 'theme'
+    },
+    prepare({ title, subtitle }: { title?: string; subtitle?: string }) {
+      return {
+        title: `User: ${title ?? 'N/A'}`,
+        subtitle: `Theme: ${subtitle ?? ''}`
+      }
+    }
+  }
 }

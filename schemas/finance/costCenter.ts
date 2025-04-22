@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'costCenter',
@@ -7,10 +8,10 @@ export default {
   fields: [
     {
       name: 'code',
-      title: 'Code',
+      title: 'Cost Center Code',
       type: 'string',
-      description: 'Unique code for reference (e.g. CC-1001)',
-      validation: (Rule: Rule) => Rule.required()
+      validation: (Rule: Rule) =>
+        Rule.required().error('Code is required')
     },
     {
       name: 'name',
@@ -23,17 +24,18 @@ export default {
       title: 'Description',
       type: 'text'
     },
-    {
-      name: 'active',
-      title: 'Active?',
-      type: 'boolean',
-      initialValue: true
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'name',
+      subtitle: 'code'
     },
-    {
-      name: 'createdAt',
-      title: 'Created At',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString()
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Unnamed Center',
+        subtitle: `Code: ${selection.subtitle ?? 'N/A'}`
+      }
     }
-  ]
+  }
 }

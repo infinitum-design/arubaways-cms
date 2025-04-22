@@ -1,27 +1,33 @@
 export default {
   name: 'permissions',
-  title: 'Role Permissions',
+  title: 'Permissions Config',
   type: 'document',
   fields: [
     {
       name: 'role',
-      title: 'User Role',
-      type: 'string',
-      options: {
-        list: ['Admin', 'Office', 'Crew']
-      }
+      title: 'Role',
+      type: 'reference',
+      to: [{ type: 'role' }]
     },
     {
-      name: 'canViewTabs',
-      title: 'Tabs Visible to Role',
-      type: 'array',
-      of: [{ type: 'string' }]
+      name: 'canEditProjects',
+      title: 'Can Edit Projects?',
+      type: 'boolean',
+      initialValue: false
     },
     {
-      name: 'canEditFields',
-      title: 'Editable Fields',
-      type: 'array',
-      of: [{ type: 'string' }]
+      name: 'canViewLogs',
+      title: 'Can View Logs?',
+      type: 'boolean',
+      initialValue: true
     }
-  ]
+  ],
+  preview: {
+    select: {
+      title: 'role.name'
+    },
+    prepare({ title }: { title?: string }) {
+      return { title: title ?? 'Role Permissions' }
+    }
+  }
 }

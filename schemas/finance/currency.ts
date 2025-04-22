@@ -1,4 +1,5 @@
 import { Rule } from 'sanity'
+import { metadataFields } from '../fields/metadata'
 
 export default {
   name: 'currency',
@@ -9,40 +10,32 @@ export default {
       name: 'code',
       title: 'Currency Code',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'ISO code (e.g. AWG, USD, EUR)'
-    },
-    {
-      name: 'symbol',
-      title: 'Currency Symbol',
-      type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. ƒ, $, €'
+      validation: (Rule: Rule) =>
+        Rule.required().length(3).error('Use standard 3-letter code (e.g. USD)')
     },
     {
       name: 'name',
       title: 'Currency Name',
       type: 'string',
-      validation: (Rule: Rule) => Rule.required(),
-      description: 'e.g. Aruban Florin, US Dollar'
+      validation: (Rule: Rule) => Rule.required()
     },
     {
-      name: 'exchangeRate',
-      title: 'Exchange Rate (to AWG)',
-      type: 'number',
-      description: 'Optional. Used for future multi-currency calculations.'
+      name: 'symbol',
+      title: 'Currency Symbol',
+      type: 'string'
     },
-    {
-      name: 'default',
-      title: 'Default Currency?',
-      type: 'boolean',
-      initialValue: false
+    ...metadataFields
+  ],
+  preview: {
+    select: {
+      title: 'code',
+      subtitle: 'name'
     },
-    {
-      name: 'active',
-      title: 'Is Active?',
-      type: 'boolean',
-      initialValue: true
+    prepare(selection: { title?: string; subtitle?: string }) {
+      return {
+        title: selection.title ?? 'Currency',
+        subtitle: selection.subtitle ?? ''
+      }
     }
-  ]
+  }
 }
